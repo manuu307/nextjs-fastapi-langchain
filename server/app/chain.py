@@ -3,11 +3,10 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_openai.embeddings import OpenAIEmbeddings
-import os
-
-os.environ["OPENAI_API_KEY"] = "sk-xxx"
-
+from dotenv import load_dotenv
 from langchain.chains.combine_documents import create_stuff_documents_chain
+
+load_dotenv()
 
 prompt = ChatPromptTemplate.from_template("""Answer the following question based only on the provided context:
 

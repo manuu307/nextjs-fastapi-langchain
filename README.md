@@ -1,79 +1,51 @@
-# langchain-nextjs-fastapi
+# Prerequisites
+- Python and Node.js: Ensure that Python (with poetry) and Node.js are installed on your system.
 
-## Installation
+- Git: Install Git for cloning repositories if you haven't already.
 
-Install the LangChain CLI if you haven't yet
+## Installing and Running the FastAPI LangChain Service
+1. Clone the Repository: Clone THIS repository.
 
-```bash
-pip install -U langchain-cli
-```
+2. Navigate to the Directory: Change your current directory to the Langchain service folder.
 
-## Adding packages
+```cd server```
 
-```bash
-# adding packages from 
-# https://github.com/langchain-ai/langchain/tree/master/templates
-langchain app add $PROJECT_NAME
+3. Install Dependencies: Install the Python dependencies using poetry.
 
-# adding custom GitHub repo packages
-langchain app add --repo $OWNER/$REPO
-# or with whole git string (supports other git providers):
-# langchain app add git+https://github.com/hwchase17/chain-of-verification
+```poetry install```
 
-# with a custom api mount point (defaults to `/{package_name}`)
-langchain app add $PROJECT_NAME --api_path=/my/custom/path/rag
-```
+4. Configure Environment Variables: Set up environment variables required by the app. Create a .env.local file in the root of your langchain service and add the OpenAI api key:
 
-Note: you remove packages by their api path
+```OPENAI_API_KEY="key value"```
 
-```bash
-langchain app remove my/custom/path/rag
-```
+5. Start the FastAPI Service: Run the FastAPI LangChain service.
 
-## Setup LangSmith (Optional)
-LangSmith will help us trace, monitor and debug LangChain applications. 
-LangSmith is currently in private beta, you can sign up [here](https://smith.langchain.com/). 
-If you don't have access, you can skip this section
+```poetry run langchain serve```
 
+Done!
 
-```shell
-export LANGCHAIN_TRACING_V2=true
-export LANGCHAIN_API_KEY=<your-api-key>
-export LANGCHAIN_PROJECT=<your-project>  # if not specified, defaults to "default"
-```
+# Installing and Running the Next.js App
 
-## Launch LangServe
+1. Navigate to the Directory: Change your current directory to the Next.js app repository in the "front" folder.
 
-```bash
-langchain serve
-```
+2. Install Dependencies: Install the Node.js dependencies.
 
-## Running in Docker
+```npm install```
 
-This project folder includes a Dockerfile that allows you to easily build and host your LangServe app.
+3. Configure Environment Variables: Set up environment variables required by the app. Create a .env.local file in the root of your Next.js app and add the following:
 
-### Building the Image
+```NEXT_PUBLIC_API=http://localhost:8000```
 
-To build the image, you simply:
+Replace http://localhost:8000 with the URL of your FastAPI LangChain service if it's hosted elsewhere.
 
-```shell
-docker build . -t my-langserve-app
-```
+4. Start the Next.js App: Run the Next.js app.
 
-If you tag your image with something other than `my-langserve-app`,
-note it for use in the next step.
+```npm run dev```
 
-### Running the Image Locally
+This command starts the Next.js development server, which will be available at http://localhost:3000.
 
-To run the image, you'll need to include any environment variables
-necessary for your application.
+# Accessing the App
+Once both the FastAPI service and the Next.js app are running, you can access the app by visiting http://localhost:3000 in your web browser. The app should be able to communicate with the FastAPI LangChain service for language processing tasks.
 
-In the below example, we inject the `OPENAI_API_KEY` environment
-variable with the value set in my local environment
-(`$OPENAI_API_KEY`)
-
-We also expose port 8080 with the `-p 8080:8080` option.
-
-```shell
-docker run -e OPENAI_API_KEY=$OPENAI_API_KEY -p 8080:8080 my-langserve-app
-```
+# Conclusion
+You have now successfully installed and run both the FastAPI LangChain service and the Next.js app. You can further customize and extend these components according to your requirements.
