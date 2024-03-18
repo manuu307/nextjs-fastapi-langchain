@@ -14,7 +14,7 @@
 
 ```poetry install```
 
-4. Configure Environment Variables: Set up environment variables required by the app. Create a .env.local file in the root of your langchain service and add the OpenAI api key:
+4. Configure Environment Variables: Set up environment variables required by the app. Create a .env file in the root of your langchain service and add the OpenAI api key:
 
 ```OPENAI_API_KEY="key value"```
 
@@ -32,7 +32,7 @@ Done!
 
 ```npm install```
 
-3. Configure Environment Variables: Set up environment variables required by the app. Create a .env.local file in the root of your Next.js app and add the following:
+3. Configure Environment Variables: Set up environment variables required by the app. Create a .env file in the root of your Next.js app and add the following:
 
 ```NEXT_PUBLIC_API=http://localhost:8000```
 
