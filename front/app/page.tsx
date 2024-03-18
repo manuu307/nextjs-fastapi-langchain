@@ -30,26 +30,28 @@ export default function Home() {
   const [prompt, setPrompt] = React.useState<string>("")
   const [user, setUser] = React.useState(null);
 
+  const token = localStorage.getItem('token');
+  
   React.useEffect(() => {
-    const token = localStorage.getItem('token');
-    async function fetchUser() {
-      setAuthVerifying(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/verify-auth`, {
-        headers: {
-          'Authorization': token ?? '',
-        }
-      });
-      const json = await res.json();
-      if (json?.authenticated === true) {
-        setUser(json);
-        setAuthVerifying(false)
-      } else {
-        router.push('sign-in');
-      }
-    }
-    fetchUser();
+    verifyAuth();
   }, [router]);
 
+  async function verifyAuth() {
+    setAuthVerifying(true)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/verify-auth`, {
+      headers: {
+        'Authorization': token ?? '',
+      }
+    });
+    const json = await res.json();
+    if (json?.authenticated === true) {
+      setUser(json);
+      setAuthVerifying(false)
+    } else {
+      router.push('sign-in');
+    }
+  }
+  
   if (authVerifying) {
     return <div>Verifying user...</div>;
   }
@@ -91,8 +93,12 @@ export default function Home() {
 
       setMessages((prevMessages:Prompt[]) => [...prevMessages, {from:"PromptiorBot", content:result.output}]);
     } catch (error:any) {
-      setError(error.message);
-      alert("Ups! Error...")
+      verifyAuth().then(() => {
+        if (user) {
+          setError(error.message);
+          alert("Ups! Error...")
+        }
+      }) 
     } finally {
       setIsLoading(false)
     }

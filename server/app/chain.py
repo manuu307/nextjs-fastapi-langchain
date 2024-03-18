@@ -8,16 +8,13 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 
 load_dotenv()
 
-prompt = ChatPromptTemplate.from_template("""Answer the following question based only on the provided context:
+prompt = ChatPromptTemplate.from_template("""
+user question: {input}
+
+Answer the above, the length of the answer must be maximum one paragraph. use the following context:
 
 <context>
     Promptior was founded in March 2023 with the mission to democratize and facilitate access to Artificial Intelligence for people and organizations worldwide. The adoption of these technologies drives innovation, improves efficiency, and radically transforms the way people work, learn, and collaborate.
-    
-    The biggest challenge organizations will face in the coming years will be to fully leverage the potential that these technologies offer to their businesses and work teams. This is achieved through process redesign, integration with existing systems, and, above all, daily and collaborative adoption by organization members.
-    
-    Our team is composed of professionals with extensive experience in technology and artificial intelligence, and we are committed to providing the tools, resources, and knowledge necessary to help our clients rapidly adopt these benefits.
-    
-    services
     
     Training and capacitation
     We offer customized training designed for every level of your organization, from executives and directors to operational teams. This training enhances understanding of the impact that these technologies have on your industry, daily life, and organizational operations. Through this process, you will unlock the potential of these technologies in your projects, receiving a roadmap to guide key decisions and empower you to innovate ahead of the competition.
@@ -32,9 +29,10 @@ prompt = ChatPromptTemplate.from_template("""Answer the following question based
     Elevate your software development teams with our training. Our approach is based on integrating AI tools and strategies to boost overall productivity and promote innovation within your organization. We provide training that goes beyond technical skills, aiming to optimize processes and increase operational efficiency throughout the development cycle. Enabling them to leverage existing AI tools to improve performance, drive competitive advantage, and transform opportunities into tangible business results.
 </context>
 
-Question: {input}""")
 
-llm = ChatOpenAI()
+""")
+
+llm = ChatOpenAI(model="gpt-3.5-turbo-1106", temperature=0.5)
 
 output_parser = StrOutputParser()
 
