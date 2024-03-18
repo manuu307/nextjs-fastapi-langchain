@@ -61,8 +61,6 @@
     - Tokens y medidas anti Ataques de Cross-Site-Request-Forgery (CSRF).
     - Añadido de restricciones Cross Origin Resource Sharing (CORS).
 
-- En cuanto a las respuestas de los prompts, si bien funciona de forma correcta, en un caso ideal intentaría calibrar mucho mejor las respuestas. He probado varias opciones con diferentes modelos de OpenAI, cambios de temperatura y una gran cantidad de variantes en el contexto, pero no he logrado conseguir el resultado perfecto.
-
 - Como algo menos importante, me hubiera gustado añadir más detalles a la configuración de la puerta de entrada (Nginx) y quizás cambiar la infraestructura existente por EKS (Kubernetes).
 
 # Conclusión
