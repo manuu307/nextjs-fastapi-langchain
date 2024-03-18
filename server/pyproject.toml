@@ -21,6 +21,7 @@ langchain-openai = "^0.0.8"
 openai = "^1.13.3"
 python-jose = "^3.3.0"
 python-dotenv = "^1.0.1"
+langchain = {extras = ["docarray"], version = "^0.1.12"}
 
 
 [tool.poetry.group.dev.dependencies]

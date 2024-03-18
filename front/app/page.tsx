@@ -87,7 +87,7 @@ export default function Home() {
           'Content-Type': 'application/json',
           'Authorization': token ?? '',
         },
-        body: JSON.stringify({input:{prompt}, config: {}}),
+        body: JSON.stringify({input:prompt}),
       });
 
       if (!response.ok) {
