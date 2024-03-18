@@ -21,6 +21,11 @@ type Prompt = {
   content:string;
 }
 
+type User = {
+  authenticated: boolean;
+  username: string;
+}
+
 export default function Home() {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
@@ -28,16 +33,16 @@ export default function Home() {
   const [error, setError] = React.useState<string | null>()
   const [messages, setMessages] = React.useState<any>([])
   const [prompt, setPrompt] = React.useState<string>("")
-  const [user, setUser] = React.useState(null);
-
-  const token = localStorage.getItem('token');
-  
+  const [user, setUser] = React.useState<User | null>(null);
+  console.log(user)
+ 
   React.useEffect(() => {
     verifyAuth();
   }, [router]);
 
   async function verifyAuth() {
     setAuthVerifying(true)
+    const token = localStorage.getItem('token');
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/verify-auth`, {
       headers: {
         'Authorization': token ?? '',
@@ -67,7 +72,7 @@ export default function Home() {
 
   const handlePrompt = async () => {
     setPrompt("")
-    setMessages((prevMessages:Prompt[]) => [...prevMessages, {from:"You", content:prompt}])
+    setMessages((prevMessages:Prompt[]) => [...prevMessages, {from: user?.username, content: prompt}])
     setIsLoading(true);
 
     try {
@@ -86,6 +91,7 @@ export default function Home() {
       });
 
       if (!response.ok) {
+        verifyAuth()
         throw new Error('Failed to fetch data');
       }
 
@@ -93,12 +99,8 @@ export default function Home() {
 
       setMessages((prevMessages:Prompt[]) => [...prevMessages, {from:"PromptiorBot", content:result.output}]);
     } catch (error:any) {
-      verifyAuth().then(() => {
-        if (user) {
-          setError(error.message);
-          alert("Ups! Error...")
-        }
-      }) 
+      setError(error.message);
+      alert("Ups! Error...") 
     } finally {
       setIsLoading(false)
     }
@@ -119,7 +121,7 @@ export default function Home() {
         {messages?.map((message:Prompt, index:number) => (
           <ListItem key={index}>
             <ListItemAvatar>
-                { message.from === "You" ? (
+                { message.from !== "PromptiorBot" ? (
                   <Avatar>
                     <AccountCircleIcon />
                   </Avatar>

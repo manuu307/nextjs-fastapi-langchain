@@ -1,35 +1,31 @@
-FROM node:18-alpine as base
-RUN apk add --no-cache g++ make py3-pip libc6-compat
-WORKDIR /app
-COPY package*.json ./
-EXPOSE 3000
+FROM node:lts AS deps
+# Set working directory
+WORKDIR /usr/app
 
-FROM base as builder
-WORKDIR /app
-COPY . .
+# Install PM2 globally
+RUN npm install --global pm2
+
+# Copy "package.json" and "package-lock.json" before other files
+# Utilise Docker cache to save re-installing dependencies if unchanged
+COPY ./package*.json ./
+
+# Install dependencies
+RUN npm install --production
+
+# Copy all files
+COPY ./ ./
+
+# Build app
+#RUN apk --no-cache add openssl direnv git musl-dev openssl-dev build-base perl protoc
+RUN apt-get -qy update && apt-get -qy install openssl direnv git musl-dev
 RUN npm run build
 
+# Expose the listening port
+EXPOSE 3000
 
-FROM base as production
-WORKDIR /app
+# Run container as non-root (unprivileged) user
+# The "node" user is provided in the Node.js Alpine base image
+USER node
 
-ENV NODE_ENV=production
-RUN npm ci
-
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-USER nextjs
-
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/public ./public
-
-CMD npm start
-
-FROM base as dev
-ENV NODE_ENV=development
-RUN npm install 
-COPY . .
-CMD npm run dev
+# Launch app with PM2
+CMD [ "pm2-runtime", "start", "npm", "--", "start" ]
